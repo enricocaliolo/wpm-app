@@ -1,4 +1,5 @@
 export { Timer } from "./Timer";
-export { Input } from "./Input";
+export { InputWrapper } from "./InputWrapper";
 export { WordList } from "./WordList";
 export { Word } from "./Word";
+export { Input } from "./Input";

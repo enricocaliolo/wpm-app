@@ -1,35 +1,30 @@
-import React, {
-  ChangeEvent,
-  FormEvent,
-  KeyboardEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ChangeEvent, useState } from "react";
 import useWordStore from "../stores/word_store";
-import { Word, WordList } from "../components";
+import { IWordSubmitted } from "../interfaces";
 
-export function Input() {
-  const setWordWritten = useWordStore((state) => state.setWordWritten);
-  const wordSubmitted = useWordStore((state) => state.wordSubmitted);
-  const addWordSubmitted = useWordStore((state) => state.addWordSubmitted);
-  const changeWord = useWordStore((state) => state.changeWord);
+type InputProps = {
+  childInputRef: any;
+};
+
+export function Input({ childInputRef }: InputProps) {
   const isCorrect = useWordStore((state) => state.isCorrect);
+  const currentWord = useWordStore((state) => state.currentWord);
 
-  const childInputRef = useRef<HTMLInputElement>(null);
+  const setWordWritten = useWordStore((state) => state.setWordWritten);
+  const changeWord = useWordStore((state) => state.changeWord);
+  const addWordSubmitted = useWordStore((state) => state.addWordSubmitted);
+  const increaseScore = useWordStore((state) => state.increaseScore);
 
   const [isEnterKey, setIsEnterKey] = useState(false);
 
-  const focusChild = () => {
-    childInputRef.current && childInputRef.current.focus();
+  const checkWord = (currentWord: string, wordSubmitted: string): boolean => {
+    if (currentWord === wordSubmitted) {
+      increaseScore();
+      return true;
+    } else {
+      return false;
+    }
   };
-
-  // const checkWord = (currentWord: string, wordSubmitted: IWordSubmitted) => {
-  //   if (currentWord === wordSubmitted.word) {
-  //     increaseScore();
-  //   } else {
-  //   }
-  // };
 
   const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -47,7 +42,11 @@ export function Input() {
       (e.currentTarget.innerText.match(/\s/) || isEnterKey)
     ) {
       const word = e.currentTarget.innerText.slice(0, -1);
-      addWordSubmitted(word);
+      if (checkWord(currentWord, word)) {
+        addWordSubmitted(word, true);
+      } else {
+        addWordSubmitted(word, false);
+      }
       setWordWritten(" ");
       changeWord();
       e.currentTarget.innerText = "";
@@ -58,27 +57,18 @@ export function Input() {
   };
 
   return (
-    <div className="input-wrapper" onClick={focusChild}>
-      <div className="past-input">
-        {wordSubmitted.length > 0 &&
-          wordSubmitted.map((word, index) => <Word key={index} word={word} />)}
-        <div
-          className={`${
-            isCorrect
-              ? "content-editable correct-word"
-              : "content-editable incorrect-word"
-          }`}
-          contentEditable={true}
-          onInput={(e: ChangeEvent<HTMLInputElement>) => handleInput(e)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") setIsEnterKey(true);
-          }}
-          ref={childInputRef}
-        ></div>
-      </div>
-      <div className="input-container">
-        <WordList />
-      </div>
-    </div>
+    <div
+      className={`${
+        isCorrect
+          ? "content-editable correct-word"
+          : "content-editable incorrect-word"
+      }`}
+      contentEditable={true}
+      onInput={(e: ChangeEvent<HTMLInputElement>) => handleInput(e)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") setIsEnterKey(true);
+      }}
+      ref={childInputRef}
+    ></div>
   );
 }

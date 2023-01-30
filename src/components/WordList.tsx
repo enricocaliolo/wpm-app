@@ -1,31 +1,24 @@
 import useWordStore from "../stores/word_store";
 import { Word } from "../components";
 import { useEffect, useRef, useState } from "react";
-import { IWordSubmitted } from "../interfaces";
+// import { text } from "../data/text";
 
 export function WordList() {
   const text = useWordStore((state) => state.text);
-
   const wordWritten = useWordStore((state) => state.wordWritten);
   const changeWordFlag = useWordStore((state) => state.changeWordFlag);
   const isCorrect = useWordStore((state) => state.isCorrect);
   const wordSubmitted = useWordStore((state) => state.wordSubmitted);
-  const increaseScore = useWordStore((state) => state.increaseScore);
+  const currentWord = useWordStore((state) => state.currentWord);
 
   const changeWord = useWordStore((state) => state.changeWord);
   const setIsCorrect = useWordStore((state) => state.setIsCorrect);
+  const setCurrentWord = useWordStore((state) => state.setCurrentWord);
+  const changeText = useWordStore((state) => state.changeText);
 
   const [textToBeDisplayed, setTextToBeDisplayed] = useState([
     ...text.split(" "),
   ]);
-  const [currentWord, setCurrentWord] = useState(textToBeDisplayed[0]);
-
-  const checkWord = (currentWord: string, wordSubmitted: string) => {
-    if (currentWord === wordSubmitted) {
-      increaseScore();
-    } else {
-    }
-  };
 
   const checkSpelling = (wordWritten: string) => {
     // checks if string written is the same
@@ -48,15 +41,24 @@ export function WordList() {
     }
   };
 
+  useEffect(() => {
+    setCurrentWord(textToBeDisplayed[0]);
+  }, []);
+
+  useEffect(() => {
+    console.log(text);
+  }, [text]);
+
   // checks when user press space, meaning they submitted a word
   useEffect(() => {
     if (changeWordFlag) {
       textToBeDisplayed.shift();
+      if (textToBeDisplayed.length === 0) {
+        changeText();
+      }
       setCurrentWord(textToBeDisplayed[0]);
       changeWord();
     }
-
-    checkWord(currentWord, wordSubmitted[wordSubmitted.length - 1]);
   }, [wordSubmitted]);
 
   // check spelling of the word as the user types
