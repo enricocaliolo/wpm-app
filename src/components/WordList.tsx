@@ -15,10 +15,11 @@ export function WordList() {
   const setIsCorrect = useWordStore((state) => state.setIsCorrect);
   const setCurrentWord = useWordStore((state) => state.setCurrentWord);
   const changeText = useWordStore((state) => state.changeText);
+  const setText = useWordStore((state) => state.setText);
 
-  const [textToBeDisplayed, setTextToBeDisplayed] = useState([
-    ...text.split(" "),
-  ]);
+  // const [text, setTextToBeDisplayed] = useState([
+  //   ...text.split(" "),
+  // ]);
 
   const checkSpelling = (wordWritten: string) => {
     // checks if string written is the same
@@ -32,31 +33,27 @@ export function WordList() {
       // removes letters written correctly from text
       const newWord = currentWord.slice(wordWritten.length, currentWord.length);
 
-      let tempText = [...textToBeDisplayed];
+      let tempText = [...text];
       tempText[0] = newWord;
 
-      setTextToBeDisplayed(() => tempText);
+      setText(tempText);
     } else {
       setIsCorrect(false);
     }
   };
 
   useEffect(() => {
-    setCurrentWord(textToBeDisplayed[0]);
+    setCurrentWord(text[0]);
   }, []);
-
-  useEffect(() => {
-    console.log(text);
-  }, [text]);
 
   // checks when user press space, meaning they submitted a word
   useEffect(() => {
     if (changeWordFlag) {
-      textToBeDisplayed.shift();
-      if (textToBeDisplayed.length === 0) {
+      text.shift();
+      if (text.length === 0) {
         changeText();
       }
-      setCurrentWord(textToBeDisplayed[0]);
+      setCurrentWord(text[0]);
       changeWord();
     }
   }, [wordSubmitted]);
@@ -68,7 +65,7 @@ export function WordList() {
 
   return (
     <div className="words">
-      {textToBeDisplayed.map((word, index) => {
+      {text.map((word, index) => {
         return <Word key={index} word={word} />;
       })}
     </div>

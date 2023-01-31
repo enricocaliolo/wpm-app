@@ -1,6 +1,5 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import useWordStore from "../stores/word_store";
-import { IWordSubmitted } from "../interfaces";
 
 type InputProps = {
   childInputRef: any;
@@ -9,11 +8,14 @@ type InputProps = {
 export function Input({ childInputRef }: InputProps) {
   const isCorrect = useWordStore((state) => state.isCorrect);
   const currentWord = useWordStore((state) => state.currentWord);
+  const flagStartTest = useWordStore((state) => state.flagStartTest);
+  const flagInput = useWordStore((state) => state.flagInput);
 
   const setWordWritten = useWordStore((state) => state.setWordWritten);
   const changeWord = useWordStore((state) => state.changeWord);
   const addWordSubmitted = useWordStore((state) => state.addWordSubmitted);
   const increaseScore = useWordStore((state) => state.increaseScore);
+  const startTest = useWordStore((state) => state.startTest);
 
   const [isEnterKey, setIsEnterKey] = useState(false);
 
@@ -28,6 +30,10 @@ export function Input({ childInputRef }: InputProps) {
 
   const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
+
+    if (!flagStartTest) {
+      startTest();
+    }
 
     // check if the current inner text is either a backspace or a enter key
     if (
@@ -63,10 +69,12 @@ export function Input({ childInputRef }: InputProps) {
           ? "content-editable correct-word"
           : "content-editable incorrect-word"
       }`}
-      contentEditable={true}
+      contentEditable={flagInput}
       onInput={(e: ChangeEvent<HTMLInputElement>) => handleInput(e)}
       onKeyDown={(e) => {
-        if (e.key === "Enter") setIsEnterKey(true);
+        if (e.key === "Enter") {
+          setIsEnterKey(true);
+        }
       }}
       ref={childInputRef}
     ></div>

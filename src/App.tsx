@@ -1,10 +1,12 @@
-import React from "react";
-import { Timer, InputWrapper } from "./components";
+import { Timer, InputWrapper, Score } from "./components";
 
 function App() {
   return (
     <main className="main">
-      <Timer />
+      <div className="functionality-container">
+        <Timer />
+        <Score />
+      </div>
       <InputWrapper />
     </main>
   );

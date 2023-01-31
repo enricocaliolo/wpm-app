@@ -78,3 +78,29 @@ main {
 .incorrect-submitted-word {
   text-decoration: line-through;
 }
+
+.functionality-container {
+  width: 70vw;
+  max-width: 400px;
+  margin-inline: auto;
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.box {
+  width: 100px;
+  height: 100px;
+  background-color: white;
+  box-shadow: 5px 5px 10px 10px rgb(188, 188, 188);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+}
+
+.timer {
+}
+
+.score {
+}
