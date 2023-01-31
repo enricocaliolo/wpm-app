@@ -8,7 +8,9 @@ export function Timer() {
 
   let timerIdRef = useRef(0);
 
-  const [timer, setTimer] = useState(60);
+  const timeOfTimer: number = 60;
+
+  const [timer, setTimer] = useState(timeOfTimer);
 
   useEffect(() => {
     return () => clearInterval(timerIdRef.current);
@@ -17,6 +19,7 @@ export function Timer() {
   useEffect(() => {
     if (flagStartTest) {
       if (timerIdRef.current) return;
+      setTimer(timeOfTimer);
       startTimer();
     }
   }, [flagStartTest]);
@@ -36,8 +39,9 @@ export function Timer() {
   };
 
   return (
-    <section className="box">
-      <p>{timer}</p>
-    </section>
+    <div className="box-container">
+      <h2>Timer</h2>
+      <div className="box">{timer}</div>
+    </div>
   );
 }

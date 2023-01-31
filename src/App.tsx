@@ -1,4 +1,4 @@
-import { Timer, InputWrapper, Score } from "./components";
+import { Timer, InputWrapper, Score, Button } from "./components";
 
 function App() {
   return (
@@ -8,6 +8,7 @@ function App() {
         <Score />
       </div>
       <InputWrapper />
+      <Button />
     </main>
   );
 }
